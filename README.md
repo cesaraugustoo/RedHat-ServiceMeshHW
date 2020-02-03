@@ -4,10 +4,6 @@ Openshift Master Console: http://console-openshift-console.apps.cluster-fe86.fe8
 Openshift API for command line 'oc' client: https://api.cluster-fe86.fe86.sandbox1365.opentlc.com:6443
 Cluster authentication: User 'admin' with password 'r3dh4t1!'
 
-Kiali: https://kiali-bookretail-istio-system.apps.cluster-c7a0.c7a0.sandbox891.opentlc.com/
-user:admin
-password:r3dh4t1!
-
 Part One
 
 Business Application
@@ -97,6 +93,7 @@ $ oc project istio-operator
 Now using project "istio-operator" on server "https://api.cluster-fe86.fe86.sandbox1365.opentlc.com:6443".
 
 3.2 Create the Istio operator in the "istio-operator" project:
+
 $ oc apply -n istio-operator -f https://raw.githubusercontent.com/Maistra/istio-operator/maistra-1.0.0/deploy/servicemesh-operator.yaml
 customresourcedefinition.apiextensions.k8s.io/servicemeshcontrolplanes.maistra.io created
 customresourcedefinition.apiextensions.k8s.io/servicemeshmemberrolls.maistra.io created
@@ -114,13 +111,14 @@ istio-operator-7fdc886f-5z7qp   1/1     Running   0          47s
 
 4.0  ServiceMeshControlPlane
 
-4.1 Create a namespace called istio-system where the Service Mesh control plane will be installed.
+4.1 Create a namespace called bookretail-istio-system where the Service Mesh control plane will be installed.
 
- - oc adm new-project bookretail-istio-system --display-name="Service Mesh System"
+$ oc adm new-project bookretail-istio-system --display-name="Bookretail Service Mesh System"
+Created project bookretail-istio-system
 
- 4.2 Create the custom resource file in your home directory:
+4.2 Create the custom resource file in your home directory:
 
-echo "apiVersion: maistra.io/v1
+$ echo "apiVersion: maistra.io/v1
 kind: ServiceMeshControlPlane
 metadata:
   name: service-mesh-installation
@@ -176,7 +174,36 @@ spec:
 " > $HOME/service-mesh.yaml
 
 4.3. Now create the service mesh control plane in the istio-system project:
-- oc apply -f $HOME/service-mesh.yaml -n bookretail-istio-system
+
+$ oc apply -f $HOME/service-mesh.yaml -n bookretail-istio-system
+servicemeshcontrolplane.maistra.io/service-mesh-installation created
+
+$ oc get pods -n bookretail-istio-system
+NAME                                      READY   STATUS    RESTARTS   AGE
+grafana-678f4f974f-9dskk                  2/2     Running   0          3m37s
+istio-citadel-649bcc6b49-q6fsl            1/1     Running   0          6m38s
+istio-egressgateway-5755bbbb74-92d6r      1/1     Running   0          4m15s
+istio-galley-dbb9d8554-dh7ts              1/1     Running   0          5m48s
+istio-ingressgateway-bdf465f6c-2cwj8      1/1     Running   0          4m15s
+istio-pilot-5c969bb955-ghj9m              2/2     Running   0          4m50s
+istio-policy-5b7b8d988c-8p5rd             2/2     Running   0          5m19s
+istio-sidecar-injector-6dc9d75cc5-mz22x   1/1     Running   0          4m2s
+istio-telemetry-5868b747c9-2kzs9          2/2     Running   0          5m18s
+jaeger-6b54444fff-8snv4                   2/2     Running   0          5m51s
+kiali-7b9897c46c-55nrz                    1/1     Running   0          3m1s
+prometheus-845b4f8bf9-zdqn6               2/2     Running   0          6m22s
+
+$ oc get routes -n bookretail-istio-system
+NAME                   HOST/PORT                                                                                     PATH   SERVICES               PORT    TERMINATION   WILDCARD
+grafana                grafana-bookretail-istio-system.apps.cluster-fe86.fe86.sandbox1365.opentlc.com                       grafana                <all>   reencrypt     None
+istio-ingressgateway   istio-ingressgateway-bookretail-istio-system.apps.cluster-fe86.fe86.sandbox1365.opentlc.com          istio-ingressgateway   8080                  None
+kiali                  kiali-bookretail-istio-system.apps.cluster-fe86.fe86.sandbox1365.opentlc.com                         kiali                  <all>   reencrypt     None
+prometheus             prometheus-bookretail-istio-system.apps.cluster-fe86.fe86.sandbox1365.opentlc.com                    prometheus             <all>   reencrypt     None
+
+$ oc get route kiali -n bookretail-istio-system -o jsonpath='{"https://"}{.spec.host}{"\n"}'
+https://kiali-bookretail-istio-system.apps.cluster-fe86.fe86.sandbox1365.opentlc.com
+Username: admin
+Password: r3dh4t1!
 
 5.0. ServiceMeshMemberRoll
 
