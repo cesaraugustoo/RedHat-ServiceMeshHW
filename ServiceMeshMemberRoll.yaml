@@ -1,0 +1,33 @@
+---
+- name: ServiceMeshMemberRoll Creation Playbook
+  hosts: localhost
+  vars_prompt:
+    - name: members
+      prompt: "List the member projects for the ServiceMeshMemberRoll, separated by commas"
+      private: no
+
+  tasks:
+    - set_fact:
+        member_projects: "{{ members.split(',') }}"
+
+    - name: Defining the ServiceMeshMemberRoll YAML file
+      copy:
+        dest: "$HOME/service-mesh-roll.yaml"
+        content: |
+          apiVersion: maistra.io/v1
+          kind: ServiceMeshMemberRoll
+          metadata:
+            name: default
+          spec:
+            members:
+
+    - name: Adding member projects to the YAML file
+      blockinfile:
+        dest: "$HOME/service-mesh-roll.yaml"
+        block: |5
+               - {{ item }}
+        marker: "# {mark} ANSIBLE MANAGED BLOCK {{ item }}"
+      loop: "{{ member_projects }}"
+
+    - name: Creatin the service mesh control plane membership roll
+      command: oc apply -f $HOME/service-mesh-roll.yaml -n istio-system
