@@ -1,7 +1,7 @@
 # RedHat-ServiceMeshHW
 
-Openshift Master Console: http://console-openshift-console.apps.cluster-fe86.fe86.sandbox1365.opentlc.com
-Openshift API for command line 'oc' client: https://api.cluster-fe86.fe86.sandbox1365.opentlc.com:6443
+Openshift Master Console: http://console-openshift-console.apps.cluster-8aab.8aab.sandbox649.opentlc.com
+Openshift API for command line 'oc' client: https://api.cluster-8aab.8aab.sandbox649.opentlc.com:6443
 Cluster authentication: User 'admin' with password 'r3dh4t1!'
 
 Part One
@@ -16,21 +16,37 @@ Created project bookinfo
 1.2 Deploy the bookinfo application in the new project:
 
 $ oc apply -f https://raw.githubusercontent.com/istio/istio/1.4.0/samples/bookinfo/platform/kube/bookinfo.yaml -n bookinfo
+service/details created
+serviceaccount/bookinfo-details created
+deployment.apps/details-v1 created
+service/ratings created
+serviceaccount/bookinfo-ratings created
+deployment.apps/ratings-v1 created
+service/reviews created
+serviceaccount/bookinfo-reviews created
+deployment.apps/reviews-v1 created
+deployment.apps/reviews-v2 created
+deployment.apps/reviews-v3 created
+service/productpage created
+serviceaccount/bookinfo-productpage created
+deployment.apps/productpage-v1 created
 
 1.3 Expose the productpage service as an OpenShift route:
 
 $ oc expose service productpage
+route.route.openshift.io/productpage exposed
 
 1.4 In your browser, navigate to the bookinfo productpage at the following URL:
 
 $ echo -en "\n$(oc get route productpage --template '{{ .spec.host }}')\n"
-productpage-bookinfo.apps.cluster-fe86.fe86.sandbox1365.opentlc.com
+productpage-bookinfo.apps.cluster-8aab.8aab.sandbox649.opentlc.com
 
 Install OpenShift Service Mesh
 
 2. Installing Elasticsearch, Jaeger, Kiali
 
 2.1 Install Elasticsearch Operator
+
  - In the OperatorHub catalog of your OCP Web Console, type Elasticsearch into the filter box to locate the Elasticsearch Operator.
  - Click the Elasticsearch Operator to display information about the Operator
  - Click Install
@@ -43,14 +59,14 @@ Install OpenShift Service Mesh
 
 $ oc get ClusterServiceVersion
 NAME                                         DISPLAY                  VERSION               REPLACES   PHASE
-elasticsearch-operator.4.1.31-202001140447   Elasticsearch Operator   4.1.31-202001140447              Succeeded
+elasticsearch-operator.4.1.34-202002040910   Elasticsearch Operator   4.1.34-202002040910              Succeeded
 
 $ oc get pod  -n openshift-operators | grep "^elasticsearch"
-elasticsearch-operator-6b77cc4998-28hfk   1/1     Running   0          4m42s
+elasticsearch-operator-fc588c4fb-k47kz   1/1     Running   0          110s
 
 2.2 Install Jaeger Operator
 
- - In the OperatorHub catalog of your OCP Web Console, type Jaeger into the filter box to locate the Elasticsearch Operator.
+ - In the OperatorHub catalog of your OCP Web Console, type Jaeger into the filter box to locate the Jaeger Operator.
  - Click the Jaeger Operator provided by Red Hat to display information about the Operator.
  - Click Install
  - On the Create Operator Subscription page, select :
@@ -60,10 +76,11 @@ elasticsearch-operator-6b77cc4998-28hfk   1/1     Running   0          4m42s
       d.Click Subscribe
 
 $ oc get ClusterServiceVersion | grep jaeger
+NAME                                         DISPLAY                  VERSION               REPLACES   PHASE
 jaeger-operator.v1.13.1                      Jaeger Operator          1.13.1                           Succeeded
 
 $ oc get pod  -n openshift-operators | grep "^jaeger"
-jaeger-operator-bdbcd7fd4-jp7mw           1/1     Running   0          80s	
+jaeger-operator-54b947db5d-ft95x         1/1     Running   0          2m46s	
 
 1.2 Install Kiali Operator
 
@@ -77,10 +94,11 @@ jaeger-operator-bdbcd7fd4-jp7mw           1/1     Running   0          80s
       d.Click Subscribe
 
 $ oc get ClusterServiceVersion | grep kiali
-kiali-operator.v1.0.9                        Kiali Operator           1.0.9                 kiali-operator.v1.0.8
+NAME                                         DISPLAY                  VERSION               REPLACES                PHASE
+kiali-operator.v1.0.9                        Kiali Operator           1.0.9                 kiali-operator.v1.0.8   Succeeded
 
 $ oc get pod  -n openshift-operators | grep "^kiali"
-kiali-operator-5558f5f9f8-krmwm           1/1     Running   0          60s
+kiali-operator-7fc4dd5694-c7dp6          1/1     Running   0          2m25s
 
 3. Set Up Service Mesh Operator
 
@@ -106,8 +124,8 @@ service/admission-controller created
 deployment.apps/istio-operator created
 
 $ oc get pod -n istio-operator
-NAME                            READY   STATUS    RESTARTS   AGE
-istio-operator-7fdc886f-5z7qp   1/1     Running   0          47s
+NAME                              READY   STATUS    RESTARTS   AGE
+istio-operator-568849cc4f-p88lp   1/1     Running   0          68s
 
 4.0  ServiceMeshControlPlane
 
@@ -179,29 +197,30 @@ $ oc apply -f $HOME/service-mesh.yaml -n bookretail-istio-system
 servicemeshcontrolplane.maistra.io/service-mesh-installation created
 
 $ oc get pods -n bookretail-istio-system
-NAME                                      READY   STATUS    RESTARTS   AGE
-grafana-678f4f974f-9dskk                  2/2     Running   0          3m37s
-istio-citadel-649bcc6b49-q6fsl            1/1     Running   0          6m38s
-istio-egressgateway-5755bbbb74-92d6r      1/1     Running   0          4m15s
-istio-galley-dbb9d8554-dh7ts              1/1     Running   0          5m48s
-istio-ingressgateway-bdf465f6c-2cwj8      1/1     Running   0          4m15s
-istio-pilot-5c969bb955-ghj9m              2/2     Running   0          4m50s
-istio-policy-5b7b8d988c-8p5rd             2/2     Running   0          5m19s
-istio-sidecar-injector-6dc9d75cc5-mz22x   1/1     Running   0          4m2s
-istio-telemetry-5868b747c9-2kzs9          2/2     Running   0          5m18s
-jaeger-6b54444fff-8snv4                   2/2     Running   0          5m51s
-kiali-7b9897c46c-55nrz                    1/1     Running   0          3m1s
-prometheus-845b4f8bf9-zdqn6               2/2     Running   0          6m22s
+NAME                                     READY   STATUS    RESTARTS   AGE
+grafana-655fb7bfdf-vkbcx                 2/2     Running   0          4m25s
+istio-citadel-6748569995-krwtd           1/1     Running   0          7m39s
+istio-egressgateway-5696ff4b68-q54t4     1/1     Running   0          5m8s
+istio-galley-6cdfd5fd6d-4t84g            1/1     Running   0          6m54s
+istio-ingressgateway-5f97c6875c-x28qm    1/1     Running   0          5m8s
+istio-pilot-7b8757ff6f-46vhd             2/2     Running   0          6m
+istio-policy-696d576985-tcmxq            2/2     Running   0          6m28s
+istio-sidecar-injector-5b6d8896f-p5xzh   1/1     Running   0          4m44s
+istio-telemetry-bccf5cffc-zz5nd          2/2     Running   0          6m27s
+jaeger-756748f455-d7q7b                  2/2     Running   0          6m56s
+kiali-7d8776f4f7-jbrmd                   1/1     Running   0          3m40s
+prometheus-579c8bc77c-nkpcq              2/2     Running   0          7m24s
 
 $ oc get routes -n bookretail-istio-system
-NAME                   HOST/PORT                                                                                     PATH   SERVICES               PORT    TERMINATION   WILDCARD
-grafana                grafana-bookretail-istio-system.apps.cluster-fe86.fe86.sandbox1365.opentlc.com                       grafana                <all>   reencrypt     None
-istio-ingressgateway   istio-ingressgateway-bookretail-istio-system.apps.cluster-fe86.fe86.sandbox1365.opentlc.com          istio-ingressgateway   8080                  None
-kiali                  kiali-bookretail-istio-system.apps.cluster-fe86.fe86.sandbox1365.opentlc.com                         kiali                  <all>   reencrypt     None
-prometheus             prometheus-bookretail-istio-system.apps.cluster-fe86.fe86.sandbox1365.opentlc.com                    prometheus             <all>   reencrypt     None
+NAME                   HOST/PORT                                                                                    PATH   SERVICES               PORT    TERMINATION   WILDCARD
+grafana                grafana-bookretail-istio-system.apps.cluster-8aab.8aab.sandbox649.opentlc.com                       grafana                <all>   reencrypt     None
+istio-ingressgateway   istio-ingressgateway-bookretail-istio-system.apps.cluster-8aab.8aab.sandbox649.opentlc.com          istio-ingressgateway   8080                  None
+jaeger                 jaeger-bookretail-istio-system.apps.cluster-8aab.8aab.sandbox649.opentlc.com                        jaeger-query           <all>   reencrypt     None
+kiali                  kiali-bookretail-istio-system.apps.cluster-8aab.8aab.sandbox649.opentlc.com                         kiali                  <all>   reencrypt     None
+prometheus             prometheus-bookretail-istio-system.apps.cluster-8aab.8aab.sandbox649.opentlc.com                    prometheus             <all>   reencrypt     None
 
 $ oc get route kiali -n bookretail-istio-system -o jsonpath='{"https://"}{.spec.host}{"\n"}'
-https://kiali-bookretail-istio-system.apps.cluster-fe86.fe86.sandbox1365.opentlc.com
+https://kiali-bookretail-istio-system.apps.cluster-8aab.8aab.sandbox649.opentlc.com
 Username: admin
 Password: r3dh4t1!
 
