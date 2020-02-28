@@ -31,4 +31,3 @@
 
     - name: Creatin the service mesh control plane membership roll
       command: oc apply -f $HOME/service-mesh-roll.yaml -n bookinfo-istio-system
-
