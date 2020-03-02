@@ -1,0 +1,14 @@
+---
+- name: Opt-in Auto-Injection Annotations Playbook
+  hosts: localhost
+
+  tasks:
+    - name: Download the istio annotation script from Git
+      get_url:
+        url: https://raw.githubusercontent.com/cesaraugustoo/RedHat-ServiceMeshHW/master/bookinfo_inject_istio_annotation.sh
+        dest: $HOME/inject_istio_annotation.sh
+        mode: '775'
+
+    - name: Execute the shell script
+      shell: $HOME/inject_istio_annotation.sh
+
