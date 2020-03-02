@@ -30,7 +30,12 @@
       loop: "{{ member_projects }}"
 
     - name: Creating the service mesh control plane membership roll
-      command: oc apply -f $HOME/service-mesh-roll.yaml -n bookinfo-istio-system
+      shell: oc apply -f $HOME/service-mesh-roll.yaml -n bookinfo-istio-system
+    
+    - shell: echo -en "\n\n$(oc get project bookinfo -o template --template='{{.metadata.labels}}')\n\n"
+      register: output
     
     - name: Check service mesh related labels
-      command: echo -en "\n\n$(oc get project bookinfo -o template --template='{{.metadata.labels}}')\n\n"
+      debug:
+        msg: "Bookinfo project includes the appropriate service mesh related labels"
+      when: output.stdout.find("kiali.io") != -1 and output.stdout.find("maistra.io") != -1
