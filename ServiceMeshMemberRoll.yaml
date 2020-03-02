@@ -29,5 +29,8 @@
         marker: "# {mark} ANSIBLE MANAGED BLOCK {{ item }}"
       loop: "{{ member_projects }}"
 
-    - name: Creatin the service mesh control plane membership roll
+    - name: Creating the service mesh control plane membership roll
       command: oc apply -f $HOME/service-mesh-roll.yaml -n bookinfo-istio-system
+    
+    - name: Check service mesh related labels
+      command: echo -en "\n\n$(oc get project bookinfo -o template --template='{{.metadata.labels}}')\n\n"
