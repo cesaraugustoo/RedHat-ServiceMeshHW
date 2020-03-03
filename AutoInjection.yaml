@@ -18,4 +18,7 @@
              done
       register: output
 
-    - name: 
+    - name: Check the sidecar proxy
+      debug:
+        msg: "Sidecar proxy injected in the pods"
+      when: output.stdout.find("istio-proxy") != -1 and output.stdout_lines | length == 5
