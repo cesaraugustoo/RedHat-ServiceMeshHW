@@ -12,11 +12,11 @@ BI_Deployments="
 # Responsible for injecting the istio annotation that opts in a deployment for auto injection of the envoy sidecar
 function injectAndResume() {
 
-  echo -en "\n\nInjecting istio sidecar annotation into DC: $D_NAME\n"
+  echo -en "\n\nInjecting istio sidecar annotation into DC: $DC_NAME\n"
 
   # 1)  Add istio inject annotion into pod.spec.template
   echo "apiVersion: apps.openshift.io/v1
-kind: DeploymentConfig
+kind: Deployment
 metadata:
   name: $D_NAME
 spec:
@@ -42,7 +42,7 @@ spec:
 }
 
 # Enable Bookinfo Deployment for Envoy auto-injection
-for D_NAME in $BI_Deployment;
+for D_NAME in $BI_Deployments;
 do
   injectAndResume
 done
