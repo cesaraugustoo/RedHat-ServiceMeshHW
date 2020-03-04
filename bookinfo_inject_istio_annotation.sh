@@ -15,7 +15,7 @@ function injectAndResume() {
   echo -en "\n\nInjecting istio sidecar annotation into DC: $DC_NAME\n"
 
   # 1)  Add istio inject annotion into pod.spec.template
-  echo "apiVersion: apps.openshift.io/v1
+  echo "apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: $D_NAME
