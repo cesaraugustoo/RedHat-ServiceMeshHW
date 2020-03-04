@@ -32,7 +32,7 @@
     - name: Creating the service mesh control plane membership roll
       shell: oc apply -f $HOME/service-mesh-roll.yaml -n bookinfo-istio-system
     
-    - shell: echo -en "\n\n$(oc get project bookinfo -o template --template='{{.metadata.labels}}')\n\n"
+    - shell: oc get project bookinfo --show-labels
       register: output
     
     - name: Check service mesh related labels
