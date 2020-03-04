@@ -57,3 +57,9 @@
 
     - name: Create the wildcard Gateway
       shell: oc create -f wildcard-gateway.yml -n bookinfo-istio-system
+
+    - name: Command based liveness and readiness probes
+      shell: for POD_NAME in $(oc get pods -n bookinfo -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}')
+             do
+               oc patch dc $ERDEMO_USER-incident-service --type='json' -p '[{"op": "remove", "path": "/spec/template/spec/containers/0/livenessProbe/httpGet"}, {"op": "add", "path": "/spec/template/spec/containers/0/livenessProbe", "value": { "exec": { "command" : ["curl", "http://127.0.0.1:8080/actuator/health"]}, "initialDelaySeconds": 30, "timeoutSeconds": 3, "periodSeconds": 30, "successThreshold": 1, "failureThreshold": 3}}, {"op": "remove", "path": "/spec/template/spec/containers/0/readinessProbe/httpGet"}, {"op": "add", "path": "/spec/template/spec/containers/0/readinessProbe", "value": { "exec": { "command" : ["curl", "http://127.0.0.1:8080/actuator/health"]}, "initialDelaySeconds": 30, "timeoutSeconds": 3, "periodSeconds": 30, "successThreshold": 1, "failureThreshold": 3}}]' -n bookinfo
+             done     
