@@ -7,7 +7,6 @@ BI_Deployments="
         reviews-v1 \
         reviews-v2 \
         reviews-v3"
-                      
 
 # Responsible for injecting the istio annotation that opts in a deployment for auto injection of the envoy sidecar
 function injectAndResume() {
@@ -22,8 +21,15 @@ metadata:
 spec:
   template:
     metadata:
+      labels:
+       app: ${D_NAME%-*}
+       version: ${D_NAME#*-}
       annotations:
-        sidecar.istio.io/inject: \"true\"" \
+       sidecar.istio.io/inject: \"true\"
+    spec:
+      containers:
+      - name: ${D_NAME%-*}
+        image: $oc get pod $POD_NAME -n bookinfo -o jsonpath='{.spec.containers[*].image}'" \
   | oc apply -n bookinfo -f -
 
   # 2)  Loop until envoy enabled pod starts up
@@ -44,5 +50,6 @@ spec:
 # Enable Bookinfo Deployment for Envoy auto-injection
 for D_NAME in $BI_Deployments;
 do
+  POD_NAME=$(oc get pods -n bookinfo -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}' | grep $D_NAME)
   injectAndResume
 done
