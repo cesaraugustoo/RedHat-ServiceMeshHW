@@ -29,7 +29,7 @@ spec:
     spec:
       containers:
       - name: ${D_NAME%-*}
-        image: $oc get pod $POD_NAME -n bookinfo -o jsonpath='{.spec.containers[*].image}'" \
+        image: $IMG" \
   | oc apply -n bookinfo -f -
 
   # 2)  Loop until envoy enabled pod starts up
@@ -51,5 +51,6 @@ spec:
 for D_NAME in $BI_Deployments;
 do
   POD_NAME=$(oc get pods -n bookinfo -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}' | grep $D_NAME)
+  IMG=$(oc get pod $POD_NAME -n bookinfo -o jsonpath='{.spec.containers[*].image}')
   injectAndResume
 done
