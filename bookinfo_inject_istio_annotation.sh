@@ -1,12 +1,12 @@
 #!/bin/bash
 
-BI_Deployments="
-        details-v1 \
-        productpage-v1 \
-        ratings-v1 \
-        reviews-v1 \
-        reviews-v2 \
-        reviews-v3"
+	BI_Deployments="
+			details-v1 \
+			productpage-v1 \
+			ratings-v1 \
+			reviews-v1 \
+			reviews-v2 \
+			reviews-v3"
 
 # Responsible for injecting the istio annotation that opts in a deployment for auto injection of the envoy sidecar
 function injectAndResume() {
@@ -51,6 +51,6 @@ spec:
 for D_NAME in $BI_Deployments;
 do
   POD_NAME=$(oc get pods -n bookinfo -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}' | grep $D_NAME)
-  IMG=$(oc get pod $POD_NAME -n bookinfo -o jsonpath='{.spec.containers[*].image}')
+  IMG=$(oc get pod $POD_NAME -n bookinfo -o jsonpath='{.spec.containers[*].image}' | grep $D_NAME)
   injectAndResume
 done
