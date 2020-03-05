@@ -3,7 +3,6 @@
   hosts: localhost
 
   tasks:
-
     - name: Create a configuration file for openSSL
       copy:
         dest: "$HOME/cert.cfg"
@@ -11,14 +10,11 @@
            [ req ]
            req_extensions     = req_ext
            distinguished_name = req_distinguished_name
-           prompt             = no
-
+           prompt             = no \n
            [req_distinguished_name]
-           commonName=console-openshift-console.apps.cluster-f711.f711.sandbox1563.opentlc.com
-
+           commonName=console-openshift-console.apps.cluster-f711.f711.sandbox1563.opentlc.com \n
            [req_ext]
-           subjectAltName   = @alt_names
-
+           subjectAltName   = @alt_names \n
            [alt_names]
            DNS.1  = console-openshift-console.apps.cluster-f711.f711.sandbox1563.opentlc.com
            DNS.2  = *.console-openshift-console.apps.cluster-f711.f711.sandbox1563.opentlc.com
