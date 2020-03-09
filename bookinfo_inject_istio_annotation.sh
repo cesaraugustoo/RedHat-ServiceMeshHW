@@ -11,7 +11,7 @@
 # Responsible for injecting the istio annotation that opts in a deployment for auto injection of the envoy sidecar
 function injectAndResume() {
 
-  echo -en "\n\nInjecting istio sidecar annotation into DC: $DC_NAME\n"
+  echo -en "\n\nInjecting istio sidecar annotation into deployment: $D_NAME\n"
 
   # 1)  Add istio inject annotion into pod.spec.template
   echo "apiVersion: extensions/v1beta1
