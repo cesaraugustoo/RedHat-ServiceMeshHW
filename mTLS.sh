@@ -59,14 +59,39 @@ function destRule() {
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
-  name: disaster-simulator-client-mtls
+  name: $D_NAME-client-mtls
 spec:
-  host: #.$ERDEMO_NS.svc.cluster.local
+  host: ${D_NAME%-*}.bookinfo.svc.cluster.local
   trafficPolicy:
     tls:
       mode: ISTIO_MUTUAL" \
   | oc create -n bookinfo -f -
+}
 
+# Responsible for creating the virtual service for each service
+function virtService() {
+
+  echo -en "\n\nCreating the virtual service for $D_NAME\n"
+  
+  echo "---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: $D_NAME-virtualservice
+spec:
+  hosts:
+  - incident-service.$ERDEMO_USER.apps.$SUBDOMAIN_BASE
+  gateways:
+  - erd-wildcard-gateway.$SM_CP_NS.svc.cluster.local
+  http:
+  - match:
+    - uri:
+        prefix: /incidents
+    route:
+    - destination:
+        port:
+          number: 8080
+        host: $ERDEMO_USER-incident-service.$ERDEMO_NS.svc.cluster.local"
 
 }
 
@@ -75,4 +100,6 @@ for D_NAME in $BI_Deployments;
 do
   patchProbes
   servicePolicy
+  destRule
+  virtService
 done
