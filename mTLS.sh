@@ -80,9 +80,9 @@ metadata:
   name: $D_NAME-virtualservice
 spec:
   hosts:
-  - incident-service.$ERDEMO_USER.apps.$SUBDOMAIN_BASE
+  - $D_NAME-service.apps.cluster-ca48.ca48.sandbox419.opentlc.com
   gateways:
-  - erd-wildcard-gateway.$SM_CP_NS.svc.cluster.local
+  - bookinfo-wildcard-gateway.bookinfo-istio-system.svc.cluster.local
   http:
   - match:
     - uri:
@@ -91,15 +91,44 @@ spec:
     - destination:
         port:
           number: 8080
-        host: $ERDEMO_USER-incident-service.$ERDEMO_NS.svc.cluster.local"
-
+        host: $ERDEMO_USER-incident-service.$ERDEMO_NS.svc.cluster.local" \
+  | oc create -n bookinfo -f -
 }
 
-# Enable command based health probes
+# Responsible for creating the routes for each service
+function servRoute() {
+
+  echo -en "\n\nCreating route for service $D_NAME\n"
+  
+  echo echo "---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  annotations:
+    openshift.io/host.generated: \"true\"
+  labels:
+    app: $D_NAME
+  name: $D_NAME-service-gateway
+spec:
+  host: incident-service.$ERDEMO_USER.apps.$SUBDOMAIN_BASE
+  port:
+    targetPort: https
+  tls:
+    termination: passthrough
+  to:
+    kind: Service
+    name: istio-ingressgateway
+    weight: 100
+  wildcardPolicy: None" \
+  | oc create -n bookinfo -f -
+}
+
+# Enable mTLS
 for D_NAME in $BI_Deployments;
 do
   patchProbes
   servicePolicy
   destRule
   virtService
+  servRoute
 done
