@@ -18,7 +18,7 @@
            # [alt_names]
            # DNS.1  = apps.cluster-08f8.08f8.sandbox744.opentlc.com
            # DNS.2  = *.apps.cluster-08f8.08f8.sandbox744.opentlc.com
-      shell: cat <<EOF | tee ./cert.cfg
+      shell: "cat <<EOF | tee ./cert.cfg
 [ req ]
 req_extensions     = req_ext
 distinguished_name = req_distinguished_name
@@ -33,7 +33,7 @@ subjectAltName   = @alt_names
 [alt_names]
 DNS.1  = apps.cluster-08f8.08f8.sandbox744.opentlc.com
 DNS.2  = *.apps.cluster-08f8.08f8.sandbox744.opentlc.com
-EOF
+EOF"
 
     - name: Create a self-signed certificate and private key
       shell: openssl req -x509 -config cert.cfg -extensions req_ext -nodes -days 730 -newkey rsa:2048 -sha256 -keyout tls.key -out tls.crt
