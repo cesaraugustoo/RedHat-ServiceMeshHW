@@ -1,12 +1,12 @@
 #!/bin/bash
 
 	BI_Deployments="
-			details-v1 \
-			productpage-v1 \
-			ratings-v1 \
-			reviews-v1 \
-			reviews-v2 \
-			reviews-v3"
+			details-v1"
+#			productpage-v1 \
+#			ratings-v1 \
+#			reviews-v1 \
+#			reviews-v2 \
+#			reviews-v3"
 
 # Responsible for patching the readiness and liveness probes in the deployments
 function patchProbes() {
@@ -80,18 +80,18 @@ metadata:
   name: $D_NAME-virtualservice
 spec:
   hosts:
-  - $D_NAME-service.apps.cluster-ca48.ca48.sandbox419.opentlc.com
+  - $D_NAME-service.apps.cluster-08f8.08f8.sandbox744.opentlc.com
   gateways:
   - bookinfo-wildcard-gateway.bookinfo-istio-system.svc.cluster.local
   http:
   - match:
     - uri:
-        prefix: /incidents
+        prefix: /${D_NAME%-*}
     route:
     - destination:
         port:
           number: 8080
-        host: $ERDEMO_USER-incident-service.$ERDEMO_NS.svc.cluster.local" \
+        host: $D_NAME-service.bookinfo.svc.cluster.local" \
   | oc create -n bookinfo -f -
 }
 
@@ -110,7 +110,7 @@ metadata:
     app: $D_NAME
   name: $D_NAME-service-gateway
 spec:
-  host: incident-service.$ERDEMO_USER.apps.$SUBDOMAIN_BASE
+  host: $D_NAME-service.apps.cluster-08f8.08f8.sandbox744.opentlc.com
   port:
     targetPort: https
   tls:
@@ -131,4 +131,5 @@ do
   destRule
   virtService
   servRoute
+#  oc delete route $D_NAME -n bookinfo
 done
