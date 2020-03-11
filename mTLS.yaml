@@ -27,7 +27,11 @@
 
     - name: Restart the Istio Ingress Gateway pod
 #     shell: oc patch deployment istio-ingressgateway -p '{"spec":{"template":{"metadata":{"annotations":{"kubectl.kubernetes.io/restartedAt": "'`date +%FT%T%z`'"}}}}}' -n bookinfo-istio-system
-      shell: oc rollout latest deployment/istio-ingressgateway -n bookinfo-istio-system
+#     shell: oc rollout latest deployment/istio-ingressgateway -n bookinfo-istio-system
+      shell: "oc scale --replicas=0 deployment/istio-ingressgateway -n bookinfo-istio-system
+sleep 30
+oc scale --replicas=1 deployment/istio-ingressgateway -n bookinfo-istio-system
+sleep 30"
 
     - name: Defining the wildcard Gateway YAML file
       copy:
