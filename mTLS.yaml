@@ -12,12 +12,12 @@
            distinguished_name = req_distinguished_name
            prompt             = no \n
            [req_distinguished_name]
-           commonName=console-openshift-console.apps.cluster-f711.f711.sandbox1563.opentlc.com \n
+           commonName=console-openshift-console.apps.cluster-08f8.08f8.sandbox744.opentlc.com \n
            [req_ext]
            subjectAltName   = @alt_names \n
            [alt_names]
-           DNS.1  = console-openshift-console.apps.cluster-f711.f711.sandbox1563.opentlc.com
-           DNS.2  = *.console-openshift-console.apps.cluster-f711.f711.sandbox1563.opentlc.com
+           DNS.1  = apps.cluster-08f8.08f8.sandbox744.opentlc.com
+           DNS.2  = *.apps.cluster-08f8.08f8.sandbox744.opentlc.com
 
     - name: Create a self-signed certificate and private key
       shell: openssl req -x509 -config cert.cfg -extensions req_ext -nodes -days 730 -newkey rsa:2048 -sha256 -keyout tls.key -out tls.crt
@@ -49,7 +49,16 @@
                 privateKey: /etc/istio/ingressgateway-certs/tls.key
                 serverCertificate: /etc/istio/ingressgateway-certs/tls.crt
               hosts:
-              - \"*.apps.cluster-ca48.ca48.sandbox419.opentlc.com\"
+              - \"*.apps.cluster-08f8.08f8.sandbox744.opentlc.com\"
 
     - name: Create the wildcard Gateway
       shell: oc create -f wildcard-gateway.yml -n bookinfo-istio-system
+
+    - name: Download the mTLS script from Git
+      get_url:
+        url: https://raw.githubusercontent.com/cesaraugustoo/RedHat-ServiceMeshHW/master/mTLS.sh
+        dest: $HOME/mTLS.sh
+        mode: '775'
+
+    - name: Configuring mTLS in each service
+      shell: $HOME/mTLS.sh
