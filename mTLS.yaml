@@ -29,7 +29,7 @@
 #     shell: oc patch deployment istio-ingressgateway -p '{"spec":{"template":{"metadata":{"annotations":{"kubectl.kubernetes.io/restartedAt": "'`date +%FT%T%z`'"}}}}}' -n bookinfo-istio-system
       shell: oc rollout latest deployment/istio-ingressgateway -n bookinfo-istio-system
 
-    - name: Defining the wildcard Gateway YAML file:
+    - name: Defining the wildcard Gateway YAML file
       copy:
         dest: "$HOME/wildcard-gateway.yml"
         content: |
