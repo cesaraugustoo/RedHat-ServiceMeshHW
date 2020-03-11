@@ -4,35 +4,20 @@
 
   tasks:
     - name: Create a configuration file for openSSL
-      # copy:
-        # dest: "$HOME/cert.cfg"
-        # content: |
-           # [ req ]
-           # req_extensions     = req_ext
-           # distinguished_name = req_distinguished_name
-           # prompt             = no
-           # [req_distinguished_name]
-           # commonName=console-openshift-console.apps.cluster-08f8.08f8.sandbox744.opentlc.com
-           # [req_ext]
-           # subjectAltName   = @alt_names
-           # [alt_names]
-           # DNS.1  = apps.cluster-08f8.08f8.sandbox744.opentlc.com
-           # DNS.2  = *.apps.cluster-08f8.08f8.sandbox744.opentlc.com
-      shell: "echo
-[ req ]
-req_extensions     = req_ext
-distinguished_name = req_distinguished_name
-prompt             = no
-
-[req_distinguished_name]
-commonName=console-openshift-console.apps.cluster-08f8.08f8.sandbox744.opentlc.com
-
-[req_ext]
-subjectAltName   = @alt_names
-
-[alt_names]
-DNS.1  = apps.cluster-08f8.08f8.sandbox744.opentlc.com
-DNS.2  = *.apps.cluster-08f8.08f8.sandbox744.opentlc.com > $HOME/cert.cfg"
+      copy:
+        dest: "$HOME/cert.cfg"
+        content: |
+           [ req ]
+           req_extensions     = req_ext
+           distinguished_name = req_distinguished_name
+           prompt             = no
+           [req_distinguished_name]
+           commonName=console-openshift-console.apps.cluster-08f8.08f8.sandbox744.opentlc.com
+           [req_ext]
+           subjectAltName   = @alt_names
+           [alt_names]
+           DNS.1  = apps.cluster-08f8.08f8.sandbox744.opentlc.com
+           DNS.2  = *.apps.cluster-08f8.08f8.sandbox744.opentlc.com
 
     - name: Create a self-signed certificate and private key
       shell: openssl req -x509 -config cert.cfg -extensions req_ext -nodes -days 730 -newkey rsa:2048 -sha256 -keyout tls.key -out tls.crt
