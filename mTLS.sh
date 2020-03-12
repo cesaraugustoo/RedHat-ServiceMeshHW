@@ -100,7 +100,7 @@ function servRoute() {
 
   echo -en "\n\nCreating route for service $D_NAME\n"
   
-  echo echo "---
+  echo "---
 apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
