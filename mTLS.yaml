@@ -55,7 +55,7 @@ sleep 30"
                 privateKey: /etc/istio/ingressgateway-certs/tls.key
                 serverCertificate: /etc/istio/ingressgateway-certs/tls.crt
                hosts:
-               - \"*.clientvm.08f8.internal\""
+               - \"*.apps.clientvm.08f8.internal.opentlc.com\"
 
     - name: Create the wildcard Gateway
       shell: oc create -f wildcard-gateway.yml -n bookinfo-istio-system
