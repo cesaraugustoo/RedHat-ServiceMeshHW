@@ -80,7 +80,7 @@ metadata:
   name: $D_NAME-virtualservice
 spec:
   hosts:
-  - $D_NAME-service.apps.clientvm.08f8.internal.opentlc.com
+  - $D_NAME-service.apps.cluster-08f8.08f8.sandbox744.opentlc.com
   gateways:
   - bookinfo-wildcard-gateway.bookinfo-istio-system.svc.cluster.local
   http:
@@ -110,7 +110,7 @@ metadata:
     app: $D_NAME
   name: $D_NAME-service-gateway
 spec:
-  host: $D_NAME-service.apps.clientvm.08f8.internal.opentlc.com
+  host: $D_NAME-service.apps.cluster-08f8.08f8.sandbox744.opentlc.com
   port:
     targetPort: https
   tls:
