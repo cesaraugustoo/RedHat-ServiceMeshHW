@@ -57,14 +57,131 @@ sleep 30"
                hosts:
                - "*"
 
-    - name: Create the wildcard Gateway
+    - name: Create the wildcard gateway
       shell: oc create -f wildcard-gateway.yml -n bookinfo-istio-system
 
-    - name: Download the mTLS script from Git
+    - name: Download the probesAndServices script from Git
       get_url:
-        url: https://raw.githubusercontent.com/cesaraugustoo/RedHat-ServiceMeshHW/master/mTLS.sh
-        dest: $HOME/mTLS.sh
+        url: https://raw.githubusercontent.com/cesaraugustoo/RedHat-ServiceMeshHW/master/probesAndServices.sh
+        dest: $HOME/probesAndServices.sh
         mode: '775'
 
-    - name: Configuring mTLS in each service
-      shell: $HOME/mTLS.sh
+    - name: Configuring probes and services
+      shell: $HOME/probesAndServices.sh
+
+    - name: Defining the mTLS rules file
+      copy:
+        dest: "$HOME/mtlsRules.yml"
+        content: |
+           apiVersion: networking.istio.io/v1alpha3
+           kind: DestinationRule
+           metadata:
+             name: productpage
+           spec:
+             host: productpage
+             trafficPolicy:
+               tls:
+                mode: ISTIO_MUTUAL
+             subsets:
+             - name: v1
+               labels:
+                 version: v1
+           ---
+           apiVersion: networking.istio.io/v1alpha3
+           kind: DestinationRule
+           metadata:
+             name: reviews
+           spec:
+             host: reviews
+             trafficPolicy:
+               tls:
+                mode: ISTIO_MUTUAL
+             subsets:
+             - name: v1
+               labels:
+                 version: v1
+             - name: v2
+               labels:
+                 version: v2
+             - name: v3
+               labels:
+                 version: v3
+           ---
+           apiVersion: networking.istio.io/v1alpha3
+           kind: DestinationRule
+           metadata:
+             name: ratings
+           spec:
+             host: ratings
+             trafficPolicy:
+               tls:
+                mode: ISTIO_MUTUAL
+             subsets:
+             - name: v1
+               labels:
+                 version: v1
+             - name: v2
+               labels:
+                 version: v2
+             - name: v2-mysql
+               labels:
+                 version: v2-mysql
+             - name: v2-mysql-vm
+               labels:
+                 version: v2-mysql-vm
+           ---
+           apiVersion: networking.istio.io/v1alpha3
+           kind: DestinationRule
+           metadata:
+             name: details
+           spec:
+             host: details
+             trafficPolicy:
+               tls:
+                mode: ISTIO_MUTUAL
+             subsets:
+             - name: v1
+               labels:
+                 version: v1
+             - name: v2
+               labels:
+                 version: v2
+           ---
+
+    - name: Create the destination rules
+      shell: oc create -f mtlsRules.yml -n bookinfo
+
+    - name: Defining the virtual service YAML file
+      copy:
+        dest: "$HOME/virtualService.yml"
+        content: |
+           apiVersion: networking.istio.io/v1alpha3
+           kind: VirtualService
+           metadata:
+             name: bookinfo
+           spec:
+             hosts:
+             - "*"
+            gateways:
+            - bookinfo-wildcard-gateway
+            http:
+            - match:
+              - uri:
+                  exact: /productpage
+              - uri:
+                  exact: /login
+              - uri:
+                  exact: /logout
+              - uri:
+                  prefix: /api/v1/products
+              route:
+              - destination:
+                  host: productpage
+                  port:
+                    number: 8080
+
+    - name: Create the virtual service
+      shell: oc create -f virtualService.yml -n bookinfo
+
+    - name: Delete productpage URL
+      shell: oc delete route productpage -n bookinfo
