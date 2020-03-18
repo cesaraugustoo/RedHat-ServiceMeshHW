@@ -35,6 +35,11 @@
     - shell: oc get project bookinfo --show-labels
       register: output
     
+    - name: sleep for 10 seconds and continue with play
+      wait_for:
+        timeout: 10
+      delegate_to: localhost
+    
     - name: Check service mesh related labels
       debug:
         msg: "Bookinfo project includes the appropriate service mesh related labels"
