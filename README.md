@@ -39,7 +39,7 @@ route.route.openshift.io/productpage exposed
 1.4 In your browser, navigate to the bookinfo productpage at the following URL:
 
 $ echo -en "\n$(oc get route productpage --template '{{ .spec.host }}')\n"
-productpage-bookinfo.apps.cluster-08f8.08f8.sandbox744.opentlc.com
+productpage-bookinfo.apps.cluster-8071.8071.sandbox941.opentlc.com
 
 Install OpenShift Service Mesh
 
@@ -182,35 +182,35 @@ spec:
 
 " > $HOME/service-mesh.yaml
 
-3.3. Now create the service mesh control plane in the bookinfo-istio-system project:
+3.3. Now create the service mesh control plane in the bookretail-istio-system project:
 
-$ oc apply -f $HOME/service-mesh.yaml -n bookinfo-istio-system
+$ oc apply -f $HOME/service-mesh.yaml -n bookretail-istio-system
 servicemeshcontrolplane.maistra.io/service-mesh-installation created
 
-$ oc get pods -n bookinfo-istio-system
+$ oc get pods -n bookretail-istio-system
 NAME                                     READY   STATUS    RESTARTS   AGE
-grafana-77fddb8bc-gd5wz                  2/2     Running   0          8m56s
-istio-citadel-7c64cc84f-pjvw5            1/1     Running   0          17m
-istio-egressgateway-dcddd9f59-dtr7z      1/1     Running   0          10m
-istio-galley-cfc947586-6rtvh             1/1     Running   0          12m
-istio-ingressgateway-688ff46954-mnjp8    1/1     Running   0          10m
-istio-pilot-9db7457db-np4z4              2/2     Running   0          11m
-istio-policy-8f57d8465-jnmr8             2/2     Running   0          12m
-istio-sidecar-injector-f4f4d66d4-v8dtb   1/1     Running   0          9m54s
-istio-telemetry-8df9545d9-st28b          2/2     Running   0          12m
-jaeger-67597df48b-55tf6                  2/2     Running   0          12m
-kiali-86dc5bd4df-c8rxw                   1/1     Running   0          7m52s
-prometheus-5c94f8ff6d-2xt7n              2/2     Running   0          16m
+grafana-84678858b7-ht2sn                  2/2     Running   0          4m40s
+istio-citadel-559cb64fb8-z7pq2            1/1     Running   0          8m11s
+istio-egressgateway-79969bf565-vf8xh      1/1     Running   0          5m18s
+istio-galley-bfc84b4dc-4m5mv              1/1     Running   0          7m18s
+istio-ingressgateway-865d586477-4k7j8     1/1     Running   0          5m17s
+istio-pilot-59fbdd65d-mkpqx               2/2     Running   0          6m22s
+istio-policy-fb98c79d8-c86h5              2/2     Running   0          6m50s
+istio-sidecar-injector-868cc4cd7d-vbrb4   1/1     Running   0          5m5s
+istio-telemetry-64d95d568b-5dg5d          2/2     Running   0          6m50s
+jaeger-5dbb9b8cbc-mqxhv                   2/2     Running   0          7m21s
+kiali-86dc5bd4df-4tclv                    1/1     Running   0          4m4s
+prometheus-864ddd94d7-4xg48               2/2     Running   0          7m54s
 
-$ oc get routes -n bookinfo-istio-system
-NAME                   HOST/PORT                                                                                  PATH   SERVICES               PORT    TERMINATION   WILDCARD
-grafana                grafana-bookinfo-istio-system.apps.cluster-08f8.08f8.sandbox744.opentlc.com                       grafana                <all>   reencrypt     None
-istio-ingressgateway   istio-ingressgateway-bookinfo-istio-system.apps.cluster-08f8.08f8.sandbox744.opentlc.com          istio-ingressgateway   8080                  None
-jaeger                 jaeger-bookinfo-istio-system.apps.cluster-08f8.08f8.sandbox744.opentlc.com                        jaeger-query           <all>   reencrypt     None
-kiali                  kiali-bookinfo-istio-system.apps.cluster-08f8.08f8.sandbox744.opentlc.com                         kiali                  <all>   reencrypt     None
-prometheus             prometheus-bookinfo-istio-system.apps.cluster-08f8.08f8.sandbox744.opentlc.com                    prometheus             <all>   reencrypt     None
+$ oc get routes -n bookretail-istio-system
+NAME                   HOST/PORT                                                                                    PATH   SERVICES               PORT    TERMINATION   WILDCARD
+grafana                grafana-bookretail-istio-system.apps.cluster-8071.8071.sandbox941.opentlc.com                       grafana                <all>   reencrypt     None
+istio-ingressgateway   istio-ingressgateway-bookretail-istio-system.apps.cluster-8071.8071.sandbox941.opentlc.com          istio-ingressgateway   8080                  None
+jaeger                 jaeger-bookretail-istio-system.apps.cluster-8071.8071.sandbox941.opentlc.com                        jaeger-query           <all>   reencrypt     None
+kiali                  kiali-bookretail-istio-system.apps.cluster-8071.8071.sandbox941.opentlc.com                         kiali                  <all>   reencrypt     None
+prometheus             prometheus-bookretail-istio-system.apps.cluster-8071.8071.sandbox941.opentlc.com                    prometheus             <all>   reencrypt     None
 
-$ oc get route kiali -n bookinfo-istio-system -o jsonpath='{"https://"}{.spec.host}{"\n"}'
-https://kiali-bookinfo-istio-system.apps.cluster-08f8.08f8.sandbox744.opentlc.com
+$ oc get route kiali -n bookretail-istio-system -o jsonpath='{"https://"}{.spec.host}{"\n"}'
+https://kiali-bookretail-istio-system.apps.cluster-8071.8071.sandbox941.opentlc.com
 Username: admin
 Password: r3dh4t1!
