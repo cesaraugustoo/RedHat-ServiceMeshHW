@@ -1,7 +1,7 @@
 # RedHat-ServiceMeshHW
 
-Openshift Master Console: http://console-openshift-console.apps.cluster-08f8.08f8.sandbox744.opentlc.com
-Openshift API for command line 'oc' client: https://api.cluster-08f8.08f8.sandbox744.opentlc.com:6443
+Openshift Master Console: http://console-openshift-console.apps.cluster-8071.8071.sandbox941.opentlc.com
+Openshift API for command line 'oc' client: https://api.cluster-8071.8071.sandbox941.opentlc.com:6443
 Cluster authentication: User 'admin' with password 'r3dh4t1!'
 
 Part One
@@ -59,10 +59,10 @@ Install OpenShift Service Mesh
 
 $ oc get ClusterServiceVersion
 NAME                                         DISPLAY                  VERSION               REPLACES   PHASE
-elasticsearch-operator.4.1.34-202002040910   Elasticsearch Operator   4.1.34-202002040910              Succeeded
+elasticsearch-operator.4.1.37-202003021622   Elasticsearch Operator   4.1.37-202003021622              Succeeded
 
 $ oc get pod  -n openshift-operators | grep "^elasticsearch"
-elasticsearch-operator-fc588c4fb-8l67d   1/1     Running   0          2m32s
+elasticsearch-operator-64f57c86cb-7hgc8   1/1     Running   0          2m32s
 
 2.2 Install Jaeger Operator
 
@@ -80,9 +80,9 @@ NAME                                         DISPLAY                  VERSION   
 jaeger-operator.v1.13.1                      Jaeger Operator          1.13.1                           Succeeded
 
 $ oc get pod  -n openshift-operators | grep "^jaeger"
-jaeger-operator-54b947db5d-kllxs         1/1     Running   0          2m12s
+jaeger-operator-54b947db5d-7k5cn         1/1     Running   0          2m12s
 
-1.2 Install Kiali Operator
+2.3 Install Kiali Operator
 
  - In the OperatorHub catalog of your OCP Web Console, type Kiali Operator into the filter box to locate the Kiali Operator
  - Click the Kiali Operator provided by Red Hat to display information about the Operator
@@ -98,41 +98,32 @@ NAME                                         DISPLAY                  VERSION   
 kiali-operator.v1.0.11                       Kiali Operator           1.0.11                kiali-operator.v1.0.10   Succeeded
 
 $ oc get pod  -n openshift-operators | grep "^kiali"
-kiali-operator-767d94b8fd-frs5v          1/1     Running   0          102s
+kiali-operator-767d94b8fd-mzf4j          1/1     Running   0          102s
 
-3. Set Up Service Mesh Operator
+2.4 Install ServiceMesh Operator
 
-3.1 Create an Istio operator namespace, then switch into the "istio-operator" project:
+ - In the OperatorHub catalog of your OCP Web Console, type Service Mesh Operator into the filter box to locate the Service Mesh Operator
+ - Click the Service Mesh Operator provided by Red Hat to display information about the Operator
+ - Click Install
+ - On the Create Operator Subscription page, select :
+      a.All namespaces on the cluster (default).
+      b.Select the stable Update Channel.
+      c.Select the Automatic Approval Strategy.
+      d.Click Subscribe
 
-$ oc adm new-project istio-operator --display-name="Service Mesh Operator"
-Created project istio-operator
+$ oc get ClusterServiceVersion | grep service
+NAME                                         DISPLAY                  VERSION               REPLACES                PHASE
+servicemeshoperator.v1.0.9                   Red Hat OpenShift Service Mesh   1.0.9                 servicemeshoperator.v1.0.8   Succeeded
 
-$ oc project istio-operator
-Now using project "istio-operator" on server "https://api.cluster-08f8.08f8.sandbox744.opentlc.com:6443".
+$ oc get pod  -n openshift-operators | grep "^istio"
+istio-operator-5d997b86c7-qrp4s          1/1     Running   0          102s
 
-3.2 Create the Istio operator in the "istio-operator" project:
+3.0  ServiceMeshControlPlane
 
-$ oc apply -n istio-operator -f https://raw.githubusercontent.com/Maistra/istio-operator/maistra-1.0.0/deploy/servicemesh-operator.yaml
-customresourcedefinition.apiextensions.k8s.io/servicemeshcontrolplanes.maistra.io created
-customresourcedefinition.apiextensions.k8s.io/servicemeshmemberrolls.maistra.io created
-clusterrole.rbac.authorization.k8s.io/maistra-admin created
-clusterrolebinding.rbac.authorization.k8s.io/maistra-admin created
-clusterrole.rbac.authorization.k8s.io/istio-operator created
-serviceaccount/istio-operator created
-clusterrolebinding.rbac.authorization.k8s.io/istio-operator-account-istio-operator-cluster-role-binding created
-service/admission-controller created
-deployment.apps/istio-operator created
+4.1 Create a namespace called bookretail-istio-system where the Service Mesh control plane will be installed.
 
-$ oc get pod -n istio-operator
-NAME                              READY   STATUS    RESTARTS   AGE
-istio-operator-568849cc4f-qvcvx   1/1     Running   0          2m1s
-
-4.0  ServiceMeshControlPlane
-
-4.1 Create a namespace called bookinfo-istio-system where the Service Mesh control plane will be installed.
-
-$ oc adm new-project bookinfo-istio-system --display-name="Bookinfo Service Mesh System"
-Created project bookinfo-istio-system
+$ oc adm new-project bookretail-istio-system --display-name="Bookinfo Service Mesh System"
+Created project bookretail-istio-system
 
 4.2 Create the custom resource file in your home directory:
 
