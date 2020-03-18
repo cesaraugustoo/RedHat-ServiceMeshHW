@@ -120,12 +120,12 @@ istio-operator-5d997b86c7-qrp4s          1/1     Running   0          102s
 
 3.0  ServiceMeshControlPlane
 
-4.1 Create a namespace called bookretail-istio-system where the Service Mesh control plane will be installed.
+3.1 Create a namespace called bookretail-istio-system where the Service Mesh control plane will be installed.
 
 $ oc adm new-project bookretail-istio-system --display-name="Bookinfo Service Mesh System"
 Created project bookretail-istio-system
 
-4.2 Create the custom resource file in your home directory:
+3.2 Create the custom resource file in your home directory:
 
 $ echo "apiVersion: maistra.io/v1
 kind: ServiceMeshControlPlane
@@ -182,7 +182,7 @@ spec:
 
 " > $HOME/service-mesh.yaml
 
-4.3. Now create the service mesh control plane in the bookinfo-istio-system project:
+3.3. Now create the service mesh control plane in the bookinfo-istio-system project:
 
 $ oc apply -f $HOME/service-mesh.yaml -n bookinfo-istio-system
 servicemeshcontrolplane.maistra.io/service-mesh-installation created
