@@ -108,7 +108,7 @@ $ oc adm new-project istio-operator --display-name="Service Mesh Operator"
 Created project istio-operator
 
 $ oc project istio-operator
-Now using project "istio-operator" on server "https://api.cluster-370a.370a.sandbox977.opentlc.com:6443".
+Now using project "istio-operator" on server "https://api.cluster-08f8.08f8.sandbox744.opentlc.com:6443".
 
 3.2 Create the Istio operator in the "istio-operator" project:
 
@@ -191,7 +191,7 @@ spec:
 
 " > $HOME/service-mesh.yaml
 
-4.3. Now create the service mesh control plane in the bookretail-istio-system project:
+4.3. Now create the service mesh control plane in the bookinfo-istio-system project:
 
 $ oc apply -f $HOME/service-mesh.yaml -n bookinfo-istio-system
 servicemeshcontrolplane.maistra.io/service-mesh-installation created
