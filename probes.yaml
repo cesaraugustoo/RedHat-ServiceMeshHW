@@ -1,0 +1,13 @@
+---
+- name: mTLS Playbook
+  hosts: localhost
+
+  tasks:
+    - name: Download the probesAndServices script from Git
+      get_url:
+        url: https://raw.githubusercontent.com/cesaraugustoo/RedHat-ServiceMeshHW/master/probes.sh
+        dest: $HOME/probes.sh
+        mode: '775'
+
+    - name: Configuring probes and services
+      shell: $HOME/probes.sh
