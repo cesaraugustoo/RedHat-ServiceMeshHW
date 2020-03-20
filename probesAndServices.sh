@@ -1,12 +1,12 @@
 #!/bin/bash
 
 	BI_Deployments="
-			details-v1"
-#			productpage-v1 \
-#			ratings-v1 \
-#			reviews-v1 \
-#			reviews-v2 \
-#			reviews-v3"
+			details-v1 \
+			productpage-v1 \
+			ratings-v1 \
+			reviews-v1 \
+			reviews-v2 \
+			reviews-v3"
 
 # Responsible for patching the readiness and liveness probes in the deployments
 function patchProbes() {
@@ -14,7 +14,7 @@ function patchProbes() {
   echo -en "\n\nPatching readiness and liveness probes in $D_NAME\n"
 
   # 1)  Command based liveness and readiness probes
-  oc patch deployment $D_NAME --type='json' -p '[{"op": "remove", "path": "/spec/template/spec/containers/0/livenessProbe/httpGet"}, {"op": "add", "path": "/spec/template/spec/containers/0/livenessProbe", "value": { "exec": { "command" : ["curl", "http://127.0.0.1:8080/actuator/health"]}, "initialDelaySeconds": 30, "timeoutSeconds": 3, "periodSeconds": 30, "successThreshold": 1, "failureThreshold": 3}}, {"op": "remove", "path": "/spec/template/spec/containers/0/readinessProbe/httpGet"}, {"op": "add", "path": "/spec/template/spec/containers/0/readinessProbe", "value": { "exec": { "command" : ["curl", "http://127.0.0.1:8080/actuator/health"]}, "initialDelaySeconds": 30, "timeoutSeconds": 3, "periodSeconds": 30, "successThreshold": 1, "failureThreshold": 3}}]' -n bookinfo
+  oc patch deployment $D_NAME --type='json' -p '[{"op": "add", "path": "/spec/template/spec/containers/0/livenessProbe", "value": { "exec": { "command" : ["ls"]}, "initialDelaySeconds": 30, "timeoutSeconds": 3, "periodSeconds": 30, "successThreshold": 1, "failureThreshold": 3}}, {"op": "add", "path": "/spec/template/spec/containers/0/readinessProbe", "value": { "exec": { "command" : ["ls"]}, "initialDelaySeconds": 30, "timeoutSeconds": 3, "periodSeconds": 30, "successThreshold": 1, "failureThreshold": 3}}]' -n bookinfo
 
   # 2)  Loop until pod starts up
   replicas=1
