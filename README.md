@@ -1,7 +1,7 @@
 # RedHat-ServiceMeshHW
 
-Openshift Master Console: http://console-openshift-console.apps.cluster-2a58.2a58.sandbox489.opentlc.com
-Openshift API for command line 'oc' client: https://api.cluster-2a58.2a58.sandbox489.opentlc.com:6443
+Openshift Master Console: http://console-openshift-console.apps.cluster-6d6a.6d6a.sandbox1293.opentlc.com
+Openshift API for command line 'oc' client: https://api.cluster-6d6a.6d6a.sandbox1293.opentlc.com:6443
 Cluster authentication: User 'admin' with password 'r3dh4t1!'
 
 Part One
@@ -39,7 +39,7 @@ route.route.openshift.io/productpage exposed
 1.4 In your browser, navigate to the bookinfo productpage at the following URL:
 
 $ echo -en "\n$(oc get route productpage --template '{{ .spec.host }}')\n"
-productpage-bookinfo.apps.cluster-2a58.2a58.sandbox489.opentlc.com
+productpage-bookinfo.apps.cluster-6d6a.6d6a.sandbox1293.opentlc.com
 
 Install OpenShift Service Mesh
 
@@ -62,7 +62,7 @@ NAME                                         DISPLAY                  VERSION   
 elasticsearch-operator.4.1.37-202003021622   Elasticsearch Operator   4.1.37-202003021622              Succeeded
 
 $ oc get pod  -n openshift-operators | grep "^elasticsearch"
-elasticsearch-operator-64f57c86cb-xb5b6   1/1     Running   0          2m32s
+elasticsearch-operator-64f57c86cb-x7qxq   1/1     Running   0          2m32s
 
 2.2 Install Jaeger Operator
 
@@ -80,7 +80,7 @@ NAME                                         DISPLAY                  VERSION   
 jaeger-operator.v1.13.1                      Jaeger Operator          1.13.1                           Succeeded
 
 $ oc get pod  -n openshift-operators | grep "^jaeger"
-jaeger-operator-54b947db5d-wd9fq         1/1     Running   0          2m12s
+jaeger-operator-54b947db5d-z5ncw         1/1     Running   0          2m12s
 
 2.3 Install Kiali Operator
 
@@ -98,7 +98,7 @@ NAME                                         DISPLAY                  VERSION   
 kiali-operator.v1.0.11                       Kiali Operator           1.0.11                kiali-operator.v1.0.10   Succeeded
 
 $ oc get pod  -n openshift-operators | grep "^kiali"
-kiali-operator-767d94b8fd-qbv4n          1/1     Running   0          102s
+kiali-operator-767d94b8fd-n78jp          1/1     Running   0          102s
 
 2.4 Install ServiceMesh Operator
 
@@ -116,7 +116,7 @@ NAME                                         DISPLAY                  VERSION   
 servicemeshoperator.v1.0.9                   Red Hat OpenShift Service Mesh   1.0.9                 servicemeshoperator.v1.0.8   Succeeded
 
 $ oc get pod  -n openshift-operators | grep "^istio"
-istio-operator-5d997b86c7-4r785          1/1     Running   0          102s
+istio-operator-5d997b86c7-x99g9          1/1     Running   0          102s
 
 3.0  ServiceMeshControlPlane
 
