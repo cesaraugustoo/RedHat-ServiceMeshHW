@@ -1,6 +1,7 @@
 #!/bin/bash
 
 	BI_Deployments="
+			details-v1
 			productpage-v1 \
 			ratings-v1 \
 			reviews-v1 \
