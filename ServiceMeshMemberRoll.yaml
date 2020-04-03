@@ -30,7 +30,7 @@
       loop: "{{ member_projects }}"
 
     - name: Creating the service mesh control plane membership roll
-      shell: oc apply -f $HOME/service-mesh-roll.yaml -n bookinfo-istio-system
+      shell: oc apply -f $HOME/service-mesh-roll.yaml -n bookretail-istio-system
     
     - shell: oc get project bookinfo --show-labels
       register: output
