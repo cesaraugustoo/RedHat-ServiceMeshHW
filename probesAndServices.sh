@@ -1,12 +1,10 @@
 #!/bin/bash
 
-	BI_Deployments="
-			details-v1 \
-			productpage-v1 \
-			ratings-v1 \
-			reviews-v1 \
-			reviews-v2 \
-			reviews-v3"
+	BI_Services="
+			details \
+			productpage \
+			ratings \
+			reviews"
 
 # Responsible for patching the readiness and liveness probes in the deployments
 # function patchProbes() {
@@ -46,12 +44,12 @@ spec:
   - mtls:
       mode: STRICT
   targets:
-  - name: ${D_NAME%-*}" \
+  - name: $D_NAME" \
   | oc create -n bookinfo -f -
 }
 
 # Enable mTLS
-for D_NAME in $BI_Deployments;
+for D_NAME in $BI_Services;
 do
 #  patchProbes
   servicePolicy
